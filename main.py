@@ -108,9 +108,8 @@ class LeNet5(nn.Cell):
         # Define the required operation.
         self.conv1 = nn.Conv2d(num_channel, 6, 5, pad_mode='valid')
         self.conv2 = nn.Conv2d(6, 16, 5, pad_mode='valid')
-        self.fc1 = nn.Dense(16 * 5 * 5, 120, weight_init=Normal(0.02))
-        self.fc2 = nn.Dense(120, 84, weight_init=Normal(0.02))
-        self.fc3 = nn.Dense(84, num_class, weight_init=Normal(0.02))
+        self.fc1 = nn.Dense(16 * 5 * 5, 400, weight_init=Normal(0.02))
+        self.fc3 = nn.Dense(400, num_class, weight_init=Normal(0.02))
         self.relu = nn.ReLU()
         self.max_pool2d = nn.MaxPool2d(kernel_size=2, stride=2)
         self.flatten = nn.Flatten()
@@ -119,6 +118,11 @@ class LeNet5(nn.Cell):
     # epoch: 1 step: 1875, loss is 0.41728726029396057
     # {'Accuracy': 0.9659455128205128}
     # Success: 9629/10000 96%, Failure: 371/10000  4%
+    # ----------------------
+    # fc1++, no fc2
+    # epoch: 1 step: 1875, loss is 0.06656097620725632
+    # {'Accuracy': 0.9707532051282052}
+    # Success: 9769/10000 98%, Failure: 231/10000  2%
 
     def construct(self, x):
         # Use the defined operation to construct a forward network.
@@ -130,8 +134,6 @@ class LeNet5(nn.Cell):
         x = self.max_pool2d(x)
         x = self.flatten(x)
         x = self.fc1(x)
-        x = self.relu(x)
-        x = self.fc2(x)
         x = self.relu(x)
         x = self.fc3(x)
         return x
@@ -251,7 +253,7 @@ if __name__ == '__main__':
     model = Model(net, net_loss, net_opt, metrics={"Accuracy": Accuracy()})
     train_net(model, train_epoch, mnist_path, dataset_size, ckpoint, False)
     test_net(model, mnist_path)
-    test_net_ex(model, "./checkpoints/checkpoint_lenet-1_1875.ckpt")
+    test_net_ex(model, "./checkpoints/checkpoint_lenet_10-1_1875.ckpt")
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
 
