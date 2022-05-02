@@ -106,6 +106,11 @@ class LeNet5(nn.Cell):
     """
 
     def __init__(self, num_class=10, num_channel=1):
+        """ Memory and Error
+        400*120+120=48120 + 120*84+84=10164 + 84*10+10=850 = 59134  fc1+fc2+fc3  1.0%
+        400*400+400=160400 + 400*10+10=4010 = 164410  fc1+fc3  0.9%
+        400*10+10=4010  fc3  1.2%
+        """
         super(LeNet5, self).__init__()
         # Define the required operation.
         self.conv1 = nn.Conv2d(num_channel, 6, 5, pad_mode='valid')
