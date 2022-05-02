@@ -209,8 +209,8 @@ def save_image(i, bmp, suffix="test"):
             g = int(np.floor(bmp[x, y] * 255))
             img[x, y,] = [g, g, g]
     # print(img)
+    fname = "images"
     try:
-        fname = f"images"
         if not os.path.exists(fname):
             os.makedirs(fname)
         fname += f"/{i:05d}-{suffix}.png"
