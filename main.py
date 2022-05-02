@@ -3,6 +3,8 @@
 
 # This is a MindSpore (华为/Huawei) sample Python script.
 # conda install mindspore-cpu=1.6.1 -c mindspore -c conda-forge
+# https://anaconda.org/MindSpore/mindspore-cpu/files mindspore-cpu-1.7.0-py39_0.tar.bz2
+# conda install "mindspore-cpu-1.7.0-py39_0.tar.bz2"
 
 import os
 import requests
@@ -157,14 +159,15 @@ def test_net_ex(model, file_path):
     # Load the saved model for testing.
     param_dict = load_checkpoint(file_path)
     # Load parameters to the network.
-    load_param_into_net(net, param_dict)
+    load_param_into_net(model.predict_network, param_dict) #
 
     # Define a test dataset. If batch_size is set to 1, an image is obtained.
     ds_test = create_dataset(os.path.join(mnist_path, "test"), batch_size=1)
 
-    for fn in os.listdir("images") :
-        if fn.endswith(".png") :
-            os.remove("images/"+fn)
+    if os.path.exists("images"):
+        for fn in os.listdir("images"):
+            if fn.endswith(".png"):
+                os.remove("images/"+fn)
 
     success = 0
     failed = 0
@@ -206,9 +209,12 @@ def save_image(i, bmp, suffix="test"):
             g = int(np.floor(bmp[x, y] * 255))
             img[x, y,] = [g, g, g]
     # print(img)
-    fname = f"images/{i:05d}-{suffix}.png"
     try:
-        if True or not os.path.exists(fname):
+        fname = f"images"
+        if not os.path.exists(fname):
+            os.makedirs(fname)
+        fname += f"/{i:05d}-{suffix}.png"
+        if not os.path.exists(fname):
             skimage.io.imsave(fname, img, check_contrast=False)
     except Exception:
         print(f"Failed to save \"{fname}\".")
@@ -218,7 +224,7 @@ if __name__ == '__main__':
 
     train_path = "datasets/MNIST_Data/train"
     test_path = "datasets/MNIST_Data/test"
-    train_epoch = 1
+    train_epoch = 5
     mnist_path = "./datasets/MNIST_Data"
     dataset_size = 1
 
@@ -253,7 +259,7 @@ if __name__ == '__main__':
     model = Model(net, net_loss, net_opt, metrics={"Accuracy": Accuracy()})
     train_net(model, train_epoch, mnist_path, dataset_size, ckpoint, False)
     test_net(model, mnist_path)
-    test_net_ex(model, "./checkpoints/checkpoint_lenet_10-1_1875.ckpt")
+    test_net_ex(model, ckpoint.latest_ckpt_file_name)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
 
