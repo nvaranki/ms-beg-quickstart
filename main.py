@@ -10,12 +10,12 @@ import os
 import requests
 import argparse
 import numpy as np
+import mindspore
 import mindspore.nn as nn
 import mindspore.dataset as ds
 import mindspore.dataset.transforms.c_transforms as C
 import mindspore.dataset.vision.c_transforms as CV
 from mindspore import context
-from mindspore import Tensor
 from mindspore.ops import operations as P
 from mindspore.dataset.vision import Inter
 from mindspore import dtype as mstype
@@ -49,6 +49,7 @@ class Mul(nn.Cell):
 x = Tensor(np.array([1.0, 2.0, 3.0]).astype(np.float32))
 y = Tensor(np.array([4.0, 5.0, 6.0]).astype(np.float32))
 mul = Mul()
+print(mindspore.__version__)
 print(mul(x, y))
 
 # MindScore example code:
